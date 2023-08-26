@@ -13,7 +13,7 @@
     <div class="container">
         <div class="selectionWrapper">
             <form>
-                <input type="radio" name="people" value="hobbits" id="hobbits">
+                <input type="radio" name="people" value="hobbits" id="hobbits" checked>
                 <label for="hobbits">hobbits</label>
 
 
@@ -28,14 +28,12 @@
                 <label for="druedain">drúedain</label>
             </form>
         </div>
-        <div class="outsideWrapper">
-            <div class="insideWrapper">
-                <img src="./middle-earth.webp" class="coveredImage" id="coveredImage" alt="middle-earth bitch" />
-                <canvas class="coveringCanvas" id="pointsOfInterest"></canvas>
-                <script src="./index.js" type="module"></script>
-            </div>
+        <div class="mapWrapper">
+            <canvas class="coveringCanvas" id="pointsOfInterest"></canvas>
         </div>
+
     </div>
+    <script src="./index.js" type="module"></script>
 </body>
 
 </html>
