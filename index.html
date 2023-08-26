@@ -6,16 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>People Placer</title>
     <script src="https://cdn.jsdelivr.net/npm/fabric"></script>
-    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+    <link href="css/tabulator.min.css" rel="stylesheet">
+    <script type="text/javascript" src="js/tabulator.min.js"></script>
 </head>
 
 <body>
     <div class="container">
-        <div class="file">
-            <input type="file" id="fileUpload" />
+        <div class="row">
+            <div class="column">
+                <input type="file" id="fileUpload" />
+            </div>
         </div>
-        <div class="mapWrapper">
-            <canvas class="coveringCanvas" id="pointsOfInterest"></canvas>
+        <div class="row" id="mapRow">
+            <div class="seven columns" id="mapColumn">
+                <canvas id="poiMap"></canvas>
+            </div>
+            <div class="five columns" id="mapColumn">
+                <div id="poiTable"></div>
+            </div>
         </div>
     </div>
     <script src="./index.js" type="module"></script>

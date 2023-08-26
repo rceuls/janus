@@ -1,6 +1,8 @@
-const canvas = new fabric.Canvas('pointsOfInterest',
+const canvas = new fabric.Canvas('poiMap',
     {
         allowTouchScrolling: true,
+        height: 600,
+        width: 800,
         // backgroundImage: "./middle-earth.webp"
         backgroundColor: 'pink'
     });
@@ -82,34 +84,35 @@ function createBlip(data) {
     canvas.add(group);
 }
 
-function resizeCanvas() {
-    try {
-        canvas.setHeight(window.innerHeight);
-        canvas.setWidth(window.innerWidth);
-        canvas.renderAll();
-    }
-    catch (e) {
-        console.log(e);
-    }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-    window.addEventListener('resize', resizeCanvas, false);
-    resizeCanvas();
-
     const upload = document.getElementById("fileUpload");
     upload.addEventListener("change", (evt) => {
         var f = evt.target.files[0];
-        console.log("hello");
         if (f) {
             var r = new FileReader();
             r.onload = function (e) {
                 const lines = e.target.result.split("\n").slice(1);
+                var tabledata = [];
                 for (const l of lines) {
                     const parsed = l.split(";");
                     console.log(parsed);
                     createBlip(parsed);
+                    tabledata.push({
+                        zone: parsed[1],
+                        post: parsed[2],
+                        location: parsed[3],
+                        who: parsed[4],
+                        responsible: parsed[5],
+                        responsisble: parsed[6]
+                    })
                 }
+
+                //initialize table
+                var table = new Tabulator("#poiTable", {
+                    data: tabledata, //assign data to table
+                    autoColumns: true, //create columns from data field names
+                });
+
             };
             r.readAsText(f);
         } else {
