@@ -8,7 +8,7 @@ const canvas = new fabric.Canvas('poiMap',
     });
 
 const groups = {}
-const tabledata = []
+var tabledata = []
 
 canvas.on('mouse:wheel', function (opt) {
     var delta = opt.e.deltaY;
@@ -126,6 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
             r.onload = function (e) {
                 const lines = e.target.result.split("\n").slice(1);
                 let ix = 0;
+                tabledata = [];
                 for (const l of lines) {
                     const parsed = l.split(";");
                     createBlip(parsed, ix);
