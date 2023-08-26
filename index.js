@@ -7,7 +7,9 @@ const canvas = new fabric.Canvas('poiMap',
         backgroundColor: 'pink'
     });
 
+const groups = {
 
+}
 
 canvas.on('mouse:wheel', function (opt) {
     var delta = opt.e.deltaY;
@@ -60,13 +62,15 @@ function getTextColor(surroundingColor) {
     }
 }
 
-function createBlip(data) {
+function createBlip(data, ix) {
     const blip = new fabric.Rect({
         width: 10,
         height: 10,
         originX: 'center',
         originY: 'center',
-        fill: data[0]
+        fill: data[0],
+        hasBorders: false,
+        hasControls: false
     });
     var text = new fabric.Text(data[2], {
         fontFamily: 'Calibri',
@@ -74,14 +78,37 @@ function createBlip(data) {
         textAlign: 'center',
         originX: 'center',
         originY: 'center',
-        fill: getTextColor(data[0])
+        fill: getTextColor(data[0]),
+        hasBorders: false,
+        hasControls: false
     });
     const group = new fabric.Group([blip, text], {
         top: +data[9].split(",")[1],
         left: +data[9].split(",")[0],
     })
-    console.log(group);
+    groups[`${ix}`] = group;
     canvas.add(group);
+}
+
+function animate(target, dir) {
+    const minScale = 1;
+    const maxScale = 3;
+
+    return new Promise(resolve => {
+        target.animate({
+            scaleX: dir ? maxScale : minScale,
+            scaleY: dir ? maxScale : minScale
+        }, {
+            easing: fabric.util.ease.easeOutCubic,
+            duration: 3000,
+            onChange: canvas.renderAll.bind(canvas),
+            onComplete: function () {
+                animate(target, 0)
+            }
+
+        });
+    });
+
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -93,24 +120,40 @@ document.addEventListener("DOMContentLoaded", () => {
             r.onload = function (e) {
                 const lines = e.target.result.split("\n").slice(1);
                 var tabledata = [];
+                let ix = 0;
                 for (const l of lines) {
                     const parsed = l.split(";");
-                    console.log(parsed);
-                    createBlip(parsed);
+                    createBlip(parsed, ix);
                     tabledata.push({
                         zone: parsed[1],
                         post: parsed[2],
                         location: parsed[3],
                         who: parsed[4],
                         responsible: parsed[5],
-                        responsisble: parsed[6]
-                    })
+                        phone: parsed[7],
+                        callsign: parsed[8],
+                        id: ix
+                    });
+
+                    ix += 1;
                 }
 
                 //initialize table
                 var table = new Tabulator("#poiTable", {
                     data: tabledata, //assign data to table
                     autoColumns: true, //create columns from data field names
+
+                    autoColumnsDefinitions: function (definitions) {
+                        //definitions - array of column definition objects
+                        definitions.forEach((column) => {
+                            column.cellClick = function (e, cell) {
+                                const id = cell.getRow(cell).getData()['id'];
+                                animate(groups[`${id}`], 1)
+                            }
+                        });
+
+                        return definitions;
+                    },
                 });
 
             };
