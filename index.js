@@ -1,3 +1,5 @@
+import { getTreeDataStructure } from './data-parser.js';
+
 const canvas = new fabric.Canvas('poiMap',
     {
         allowTouchScrolling: true,
@@ -140,8 +142,10 @@ function customFilter(data, filterParams) {
 
 function onCellClick(e, cell) {
     const id = cell.getRow(cell).getData()['id'];
-    animate(groups[`${id}`], 1)
-    updateInfoBox(id);
+    if (!(`${id}`).startsWith("zone_")) {
+        animate(groups[`${id}`], 1)
+        updateInfoBox(id);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -190,10 +194,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 //initialize table
                 table = new Tabulator("#poiTable", {
-                    data: tabledata,
+                    data: getTreeDataStructure(tabledata),
                     autoColumns: false,
                     selectable: 1,
-                    filtColumns: true,
+                    fitColumns: true,
+                    dataTree: true,
+                    dataTreeStartExpanded: true,
                     columns: [
                         { title: "Zone", field: "zone", sorter: "string", cellClick: onCellClick },
                         { title: "Code", field: "code", sorter: "string", cellClick: onCellClick },
