@@ -1,4 +1,7 @@
+import { AREAS } from "./area.js";
 import { getTreeDataStructure } from "./data-parser.js";
+
+const areas = [];
 
 const canvas = new fabric.Canvas('poiMap',
     {
@@ -157,6 +160,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const filter = document.getElementById("filterValue");
     const filterReset = document.getElementById("filterClear");
 
+    document.getElementById("selectedArea").addEventListener("change", ev => {
+        for (const area of areas) {
+            if (area.area === ev.target.value) {
+                area.polygon.set({ opacity: 0.7 });
+            } else {
+                area.polygon.set({ opacity: 0.3 });
+            }
+
+        }
+        canvas.renderAll()
+    });
+
     filter.onkeyup = (e) => {
         if (table) {
             table.setFilter(customFilter, { filter: e.target.value });
@@ -167,6 +182,27 @@ document.addEventListener("DOMContentLoaded", () => {
             table.clearFilter();
         }
         filter.value = ""
+    }
+
+    let ix = 0;
+    for (const area of AREAS) {
+        const polygon = new fabric.Polygon(area.points, {
+            left: 100,
+            top: 50,
+            fill: area.color,
+            scaleX: 4,
+            scaleY: 4,
+            opacity: ix === 0 ? 0.7 : 0.2
+        });
+        areas.push({ area: area['name'], polygon });
+        canvas.add(polygon);
+        canvas.sendToBack(polygon);
+        const selectedArea = document.getElementById("selectedArea");
+        const opt = document.createElement("option");
+        opt.value = area.name;
+        opt.innerText = area.name;
+        selectedArea.appendChild(opt);
+        ix += 1;
     }
 
     upload.addEventListener("change", (evt) => {
