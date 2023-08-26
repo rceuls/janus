@@ -7,8 +7,9 @@ const canvas = new fabric.Canvas('poiMap',
         backgroundColor: 'pink'
     });
 
-const groups = {}
-var tabledata = []
+const groups = {};
+var tabledata = [];
+var table = undefined;
 
 canvas.on('mouse:wheel', function (opt) {
     var delta = opt.e.deltaY;
@@ -117,8 +118,18 @@ function updateInfoBox(id) {
     infobox.innerHTML = JSON.stringify(tabledata.find(x => x.id === id));
 }
 
+function customFilter(data, filterParams) {
+    const filter = filterParams.filter;
+    return data.searcher.includes(filter.toLocaleLowerCase());
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const upload = document.getElementById("fileUpload");
+    const filter = document.getElementById("filterValue")
+    filter.onkeyup = (e) => {
+        table.setFilter(customFilter, { filter: e.target.value });
+    };
+
     upload.addEventListener("change", (evt) => {
         var f = evt.target.files[0];
         if (f) {
@@ -138,16 +149,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         responsible: parsed[5],
                         phone: parsed[7],
                         callsign: parsed[8],
-                        id: ix
+                        id: ix,
+                        searcher: l.toLocaleLowerCase()
                     });
                     ix += 1;
                 }
 
                 //initialize table
-                var table = new Tabulator("#poiTable", {
-                    data: tabledata, //assign data to table
-                    autoColumns: true, //create columns from data field names
-
+                table = new Tabulator("#poiTable", {
+                    data: tabledata,
+                    autoColumns: true,
+                    selectable: 1,
                     autoColumnsDefinitions: function (definitions) {
                         //definitions - array of column definition objects
                         definitions.forEach((column) => {
