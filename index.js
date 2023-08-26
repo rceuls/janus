@@ -114,8 +114,23 @@ function animate(target, dir) {
 }
 
 function updateInfoBox(id) {
-    const infobox = document.getElementById("infobox");
-    infobox.innerHTML = JSON.stringify(tabledata.find(x => x.id === id));
+    const item = tabledata.find(x => x.id === id);
+    document.getElementById("infoCode").innerText = item['code'];
+    document.getElementById("infoLocation").innerText = item['location'];
+    document.getElementById("infoOrg").innerText = item['org'];
+    document.getElementById("infoHours").innerText = item['hours'];
+
+    const respNames = item['responsible'].split(",");
+    const respPhones = item['phone'].split(",");
+    const respCallSigns = item['callsign'].split(",");
+    const respFull = [];
+
+    for (var i = 0; i < respNames.length; i++) {
+        respFull.push(`${respNames[i]} (${respPhones[i]} - ${respCallSigns[i]})`)
+    }
+
+    document.getElementById('infoResp').innerText = respFull.join("\n")
+
 }
 
 function customFilter(data, filterParams) {
@@ -160,10 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     tabledata.push({
                         color: parsed[0],
                         zone: parsed[1],
-                        post: parsed[2],
+                        code: parsed[2],
                         location: parsed[3],
-                        who: parsed[4],
-                        responsible: parsed[5],
+                        org: parsed[4],
+                        hours: parsed[5],
+                        responsible: parsed[6],
                         phone: parsed[7],
                         callsign: parsed[8],
                         id: ix,
@@ -179,9 +195,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     selectable: 1,
                     filtColumns: true,
                     columns: [
-                        { title: "Zone", field: "zone", sorter: "string", cellClick: onCellClick },
+                        { title: "Code", field: "code", sorter: "string", cellClick: onCellClick },
                         { title: "Post", field: "post", sorter: "string", cellClick: onCellClick },
-                        { title: "Who", field: "who", sorter: "string", cellClick: onCellClick },
+                        { title: "Organisatie", field: "org", sorter: "string", cellClick: onCellClick },
                         { title: "Responsible", field: "responsible", sorter: "string", cellClick: onCellClick },
                     ],
                 });
