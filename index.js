@@ -1,4 +1,4 @@
-import { getTreeDataStructure } from './data-parser.js';
+import { getTreeDataStructure } from "./data-parser.js";
 
 const canvas = new fabric.Canvas('poiMap',
     {
@@ -70,23 +70,23 @@ function createBlip(data, ix) {
         height: 10,
         originX: 'center',
         originY: 'center',
-        fill: data[0],
+        fill: data['color'],
         hasBorders: false,
         hasControls: false
     });
-    var text = new fabric.Text(data[2].substring(0, 2), {
+    var text = new fabric.Text(data['code'].substring(0, 2), {
         fontFamily: 'Calibri',
         fontSize: 5,
         textAlign: 'center',
         originX: 'center',
         originY: 'center',
-        fill: getTextColor(data[0]),
+        fill: getTextColor(data['color']),
         hasBorders: false,
         hasControls: false
     });
     const group = new fabric.Group([blip, text], {
-        top: +data[9].split(",")[1],
-        left: +data[9].split(",")[0],
+        top: +data['coords'].split(",")[1],
+        left: +data['coords'].split(",")[0],
     })
     group.on('mousedown', () => {
         updateInfoBox(ix);
@@ -128,7 +128,11 @@ function updateInfoBox(id) {
     const respFull = [];
 
     for (var i = 0; i < respNames.length; i++) {
-        respFull.push(`${respNames[i]} (${respPhones[i]} - ${respCallSigns[i]})`)
+        if (respPhones.length === i + 1 && respCallSigns.length === i + 1) {
+            respFull.push(`${respNames[i]} (${respPhones[i]} - ${respCallSigns[i]})`);
+        } else {
+            respFull.push(respNames[i])
+        }
     }
 
     document.getElementById('infoResp').innerText = respFull.join("\n")
@@ -175,8 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 tabledata = [];
                 for (const l of lines) {
                     const parsed = l.split(";");
-                    createBlip(parsed, ix);
-                    tabledata.push({
+                    const d = {
                         color: parsed[0],
                         zone: parsed[1],
                         code: parsed[2],
@@ -187,8 +190,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         phone: parsed[7],
                         callsign: parsed[8],
                         id: ix,
-                        searcher: l.toLocaleLowerCase()
-                    });
+                        searcher: l.toLocaleLowerCase(),
+                        coords: parsed[9]
+                    };
+                    createBlip(d, ix);
+                    tabledata.push(d)
                     ix += 1;
                 }
 
@@ -200,6 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     fitColumns: true,
                     dataTree: true,
                     dataTreeStartExpanded: true,
+                    dataTreeChildIndent: 25,
                     columns: [
                         { title: "Zone", field: "zone", sorter: "string", cellClick: onCellClick },
                         { title: "Code", field: "code", sorter: "string", cellClick: onCellClick },
