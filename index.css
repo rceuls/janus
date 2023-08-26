@@ -1,7 +1,7 @@
 .outsideWrapper {
-    width: 75em;
-    height: 75em;
-    margin: 2%;
+    width: 62em;
+    height: 46em;
+    margin: 1em;
     border: 1px solid blue;
 }
 
@@ -25,5 +25,13 @@
     position: absolute;
     top: 0px;
     left: 0px;
-    background-color: rgba(255, 0, 0, .1);
+    /* background-color: rgba(255, 0, 0, .1); */
+}
+
+.selectionWrapper {
+    display: block;
+}
+
+.container {
+    display: inline;
 }

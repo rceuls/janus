@@ -4,17 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tetten</title>
+    <title>People Placer</title>
     <script src="https://cdn.jsdelivr.net/npm/fabric"></script>
     <link rel="stylesheet" href="./index.css">
 </head>
 
 <body>
-    <div class="outsideWrapper">
-        <div class="insideWrapper">
-            <img src="./middle-earth.webp" class="coveredImage" id="coveredImage" alt="middle-earth bitch" />
-            <canvas class="coveringCanvas" id="pointsOfInterest"></canvas>
-            <script src="./index.js" type="module"></script>
+    <div class="container">
+        <div class="selectionWrapper">
+            <form>
+                <input type="radio" name="people" value="hobbits" id="hobbits">
+                <label for="hobbits">hobbits</label>
+
+
+                <input type="radio" name="people" value="dwarves" id="dwarves">
+                <label for="dwarves">dwarves</label>
+
+                <input type="radio" name="people" value="elves" id="elves">
+                <label for="elves">elves</label>
+
+
+                <input type="radio" name="people" value="druedain" id="druedain">
+                <label for="druedain">drúedain</label>
+            </form>
+        </div>
+        <div class="outsideWrapper">
+            <div class="insideWrapper">
+                <img src="./middle-earth.webp" class="coveredImage" id="coveredImage" alt="middle-earth bitch" />
+                <canvas class="coveringCanvas" id="pointsOfInterest"></canvas>
+                <script src="./index.js" type="module"></script>
+            </div>
         </div>
     </div>
 </body>
