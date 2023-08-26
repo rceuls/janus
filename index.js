@@ -195,8 +195,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     selectable: 1,
                     filtColumns: true,
                     columns: [
-                        { title: "Code", field: "code", sorter: "string", cellClick: onCellClick },
                         { title: "Zone", field: "zone", sorter: "string", cellClick: onCellClick },
+                        { title: "Code", field: "code", sorter: "string", cellClick: onCellClick },
                         { title: "Organisatie", field: "org", sorter: "string", cellClick: onCellClick },
                         { title: "Responsible", field: "responsible", sorter: "string", cellClick: onCellClick },
                     ],
