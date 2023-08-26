@@ -7,9 +7,8 @@ const canvas = new fabric.Canvas('poiMap',
         backgroundColor: 'pink'
     });
 
-const groups = {
-
-}
+const groups = {}
+const tabledata = []
 
 canvas.on('mouse:wheel', function (opt) {
     var delta = opt.e.deltaY;
@@ -72,7 +71,7 @@ function createBlip(data, ix) {
         hasBorders: false,
         hasControls: false
     });
-    var text = new fabric.Text(data[2], {
+    var text = new fabric.Text(data[2].substring(0, 2), {
         fontFamily: 'Calibri',
         fontSize: 5,
         textAlign: 'center',
@@ -85,6 +84,9 @@ function createBlip(data, ix) {
     const group = new fabric.Group([blip, text], {
         top: +data[9].split(",")[1],
         left: +data[9].split(",")[0],
+    })
+    group.on('mousedown', () => {
+        updateInfoBox(ix);
     })
     groups[`${ix}`] = group;
     canvas.add(group);
@@ -100,7 +102,7 @@ function animate(target, dir) {
             scaleY: dir ? maxScale : minScale
         }, {
             easing: fabric.util.ease.easeOutCubic,
-            duration: 3000,
+            duration: 2000,
             onChange: canvas.renderAll.bind(canvas),
             onComplete: function () {
                 animate(target, 0)
@@ -108,7 +110,11 @@ function animate(target, dir) {
 
         });
     });
+}
 
+function updateInfoBox(id) {
+    const infobox = document.getElementById("infobox");
+    infobox.innerHTML = JSON.stringify(tabledata.find(x => x.id === id));
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -119,7 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
             var r = new FileReader();
             r.onload = function (e) {
                 const lines = e.target.result.split("\n").slice(1);
-                var tabledata = [];
                 let ix = 0;
                 for (const l of lines) {
                     const parsed = l.split(";");
@@ -134,7 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         callsign: parsed[8],
                         id: ix
                     });
-
                     ix += 1;
                 }
 
@@ -149,6 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             column.cellClick = function (e, cell) {
                                 const id = cell.getRow(cell).getData()['id'];
                                 animate(groups[`${id}`], 1)
+                                updateInfoBox(id);
                             }
                         });
 
