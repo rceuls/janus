@@ -123,15 +123,26 @@ function customFilter(data, filterParams) {
     return data.searcher.includes(filter.toLocaleLowerCase());
 }
 
+function onCellClick(e, cell) {
+    const id = cell.getRow(cell).getData()['id'];
+    animate(groups[`${id}`], 1)
+    updateInfoBox(id);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const upload = document.getElementById("fileUpload");
     const filter = document.getElementById("filterValue");
     const filterReset = document.getElementById("filterClear");
+
     filter.onkeyup = (e) => {
-        table.setFilter(customFilter, { filter: e.target.value });
+        if (table) {
+            table.setFilter(customFilter, { filter: e.target.value });
+        }
     };
     filterReset.onclick = (e) => {
-        table.clearFilter();
+        if (table) {
+            table.clearFilter();
+        }
         filter.value = ""
     }
 
@@ -147,6 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const parsed = l.split(";");
                     createBlip(parsed, ix);
                     tabledata.push({
+                        color: parsed[0],
                         zone: parsed[1],
                         post: parsed[2],
                         location: parsed[3],
@@ -163,20 +175,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 //initialize table
                 table = new Tabulator("#poiTable", {
                     data: tabledata,
-                    autoColumns: true,
+                    autoColumns: false,
                     selectable: 1,
-                    autoColumnsDefinitions: function (definitions) {
-                        //definitions - array of column definition objects
-                        definitions.forEach((column) => {
-                            column.cellClick = function (e, cell) {
-                                const id = cell.getRow(cell).getData()['id'];
-                                animate(groups[`${id}`], 1)
-                                updateInfoBox(id);
-                            }
-                        });
-
-                        return definitions;
-                    },
+                    filtColumns: true,
+                    columns: [
+                        { title: "Zone", field: "zone", sorter: "string", cellClick: onCellClick },
+                        { title: "Post", field: "post", sorter: "string", cellClick: onCellClick },
+                        { title: "Who", field: "who", sorter: "string", cellClick: onCellClick },
+                        { title: "Responsible", field: "responsible", sorter: "string", cellClick: onCellClick },
+                    ],
                 });
 
             };
