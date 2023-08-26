@@ -125,10 +125,15 @@ function customFilter(data, filterParams) {
 
 document.addEventListener("DOMContentLoaded", () => {
     const upload = document.getElementById("fileUpload");
-    const filter = document.getElementById("filterValue")
+    const filter = document.getElementById("filterValue");
+    const filterReset = document.getElementById("filterClear");
     filter.onkeyup = (e) => {
         table.setFilter(customFilter, { filter: e.target.value });
     };
+    filterReset.onclick = (e) => {
+        table.clearFilter();
+        filter.value = ""
+    }
 
     upload.addEventListener("change", (evt) => {
         var f = evt.target.files[0];
