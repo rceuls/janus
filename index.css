@@ -1,7 +1,7 @@
 .outsideWrapper {
-    width: 1024px;
-    height: 768px;
-    margin: 20px 60px;
+    width: 75em;
+    height: 75em;
+    margin: 2%;
     border: 1px solid blue;
 }
 
